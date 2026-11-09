@@ -1,0 +1,67 @@
+E50 -- detector baseline for the coverage-map planner. Durable record for author response.
+generated 2026-10-23 at commit b806a58; 700 runs, 7 conditions x 5 thresholds x 20 seeds.
+regenerate the sims with: python experiments/e50_trust_baseline.py <workers>
+
+DETECTOR SEPARATION -- end-of-mission p_hat by robot (source: e45 cache)
+condition              p_hat by agent                                max/min
+clean                  0.013 0.015 0.010                               1.43x
+label flip             0.012 0.013 0.115                               9.31x
+misregisters           0.012 0.012 0.062                               5.26x
+drift                  0.013 0.015 0.018                               1.44x
+two fail differently   0.014 0.111 0.061                               7.86x
+five, one bad          0.015 0.019 0.015 0.011 0.110                  10.01x
+five, two bad          0.016 0.020 0.015 0.109 0.115                   7.65x
+
+  drift and clean are indistinguishable (~1.4x): a uniformly displaced map contradicts nothing,
+  so the detector is blind to exactly the fault the certificate is blind to.
+
+CONTROL tau=1.0 vs plain entropy_g: n=140  max|diff|=0.00e+00  INERT (patch verified)
+
+condition                cert-plain (Table 1)    cert-gated t=0.02    cert-gated t=0.03    cert-gated t=0.05     cert-gated t=0.1
+clean                        +0.014 +/-0.008     +0.018 +/-0.012 (20)     +0.016 +/-0.008 (20)     +0.015 +/-0.009 (20)     +0.014 +/-0.008 (20)
+label flip                   +0.075 +/-0.026     +0.015 +/-0.008 (20)     +0.016 +/-0.009 (20)     +0.014 +/-0.008 (20)     +0.027 +/-0.023 (20)
+misregisters                 +0.054 +/-0.021     +0.000 +/-0.013 (20)     +0.009 +/-0.013 (20)     +0.018 +/-0.017 (20)     +0.041 +/-0.022 (20)
+drift                        +0.015 +/-0.008     +0.015 +/-0.009 (20)     +0.019 +/-0.007 (20)     +0.016 +/-0.007 (20)     +0.015 +/-0.008 (20)
+two fail differently         +0.130 +/-0.036     +0.009 +/-0.013 (20)     +0.017 +/-0.014 (20)     +0.022 +/-0.021 (20)     +0.059 +/-0.020 (20)
+five, one bad                +0.051 +/-0.020     +0.009 +/-0.006 (20)     +0.011 +/-0.005 (20)     +0.012 +/-0.006 (20)     +0.012 +/-0.005 (20)
+five, two bad                +0.091 +/-0.030     +0.010 +/-0.006 (20)     +0.017 +/-0.009 (20)     +0.020 +/-0.009 (20)     +0.022 +/-0.008 (20)
+
+left uncertified (1 - certified fraction), gate at tau=0.02, paired seeds only
+condition                n  certified  coverage map    gated
+clean                   20       2.2%          3.6%     4.0%
+label flip              20       3.8%         11.3%     5.3%
+misregisters            20       4.4%          9.8%     4.4%
+drift                   20       3.9%          5.4%     5.4%
+two fail differently    20      12.3%         25.3%    13.2%
+five, one bad           20       2.7%          7.9%     3.7%
+five, two bad           20       3.6%         12.7%     4.6%
+
+left uncertified (1 - certified fraction), gate at tau=0.03, paired seeds only
+condition                n  certified  coverage map    gated
+clean                   20       2.2%          3.6%     3.8%
+label flip              20       3.8%         11.3%     5.4%
+misregisters            20       4.4%          9.8%     5.2%
+drift                   20       3.9%          5.4%     5.8%
+two fail differently    20      12.3%         25.3%    14.1%
+five, one bad           20       2.7%          7.9%     3.9%
+five, two bad           20       3.6%         12.7%     5.3%
+
+left uncertified (1 - certified fraction), gate at tau=0.05, paired seeds only
+condition                n  certified  coverage map    gated
+clean                   20       2.2%          3.6%     3.7%
+label flip              20       3.8%         11.3%     5.2%
+misregisters            20       4.4%          9.8%     6.1%
+drift                   20       3.9%          5.4%     5.5%
+two fail differently    20      12.3%         25.3%    14.5%
+five, one bad           20       2.7%          7.9%     3.9%
+five, two bad           20       3.6%         12.7%     5.6%
+
+left uncertified (1 - certified fraction), gate at tau=0.1, paired seeds only
+condition                n  certified  coverage map    gated
+clean                   20       2.2%          3.6%     3.6%
+label flip              20       3.8%         11.3%     6.5%
+misregisters            20       4.4%          9.8%     8.4%
+drift                   20       3.9%          5.4%     5.4%
+two fail differently    20      12.3%         25.3%    18.2%
+five, one bad           20       2.7%          7.9%     3.9%
+five, two bad           20       3.6%         12.7%     5.8%

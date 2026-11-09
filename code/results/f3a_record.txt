@@ -1,0 +1,57 @@
+F3a -- cross-robot disagreement as a drift signal. Pre-registered feasibility screen for route R3.
+generated 2026-10-23; 12 runs (clean and drift, 6 seeds), N=3 mesh, planner certified, budget 100 m, K=120.
+regenerate with: python experiments/f3a_crossrobot.py 4 ; python experiments/f3a_analysis.py
+
+HYPOTHESIS. E50 showed the self-estimated label-error rate p_hat separates a drifting robot from its clean
+teammates by 1.44x, against 1.43x on a clean team: a uniformly displaced map contradicts nothing locally, so
+the detector is blind to exactly the fault the certificate is blind to. Drift should be visible only relative
+to another robot's frame.
+
+MEASURE. Each robot's own single-robot certificate commits a label where exactly one of its two e-values
+clears 1/alpha. For a pair, the denominator is the cells where both gates are open and both robots commit;
+the numerator is those where the committed labels differ.
+
+RULE, fixed in advance. R3 feasible if the drifting pair's disagreement exceeds the clean pair's by >= 3x.
+
+DISAGREEMENT RATE on overlapping gated committed cells
+condition  pair kind   runs  pairs   overlap   n_both     rate      sd    ci95
+clean      clean          6     18      4419     3346   0.0034  0.0020  0.0009
+drift      clean          6      6      4623     3461   0.0025  0.0014  0.0011
+drift      drifting       6     12      4371     3087   0.0342  0.0235  0.0133
+
+  ratio against the clean condition            9.93x
+  ratio against the clean pair, same world     13.61x
+
+PAIRED BY SEED (clean pair (0,1) inside the same drift run as the control)
+seed  drifting  clean pair   ratio
+0       0.0530      0.0026   20.32
+1       0.0669      0.0014   48.93
+2       0.0239      0.0012   20.24
+3       0.0316      0.0019   16.72
+4       0.0031      0.0051    0.60
+5       0.0271      0.0030    9.11
+  median 18.48x   min 0.60x   max 48.93x
+
+VERDICT: PASS by 6x on the pre-registered threshold.
+
+ATTRIBUTION (not asked for by the screen). In every drifting pair the disagreeing cells are the drifter's
+wrong ones: the clean member's error on the shared cells is 0.000-0.005 while the drifter's is 0.001-0.074.
+So the signal names which robot is at fault, not only that a pair conflicts.
+
+SEED 4, the one ratio below 1. The drift is a random walk, so its realized magnitude varies by seed. Each
+robot's own committed-label error against ground truth in the drift condition:
+seed   agent 0   agent 1   agent 2 (drifting)
+0       0.0065    0.0013    0.0421
+1       0.0018    0.0023    0.0744
+2       0.0023    0.0029    0.0373
+3       0.0002    0.0037    0.0260
+4       0.0021    0.0045    0.0018
+5       0.0047    0.0014    0.0410
+At seed 4 the drifting robot's realized error (0.0018) is below both teammates', so there was no fault to
+detect and the signal correctly reported none. Spearman correlation between the drifter's realized error and
+the pair disagreement is 0.829 over the six seeds: the signal tracks fault magnitude rather than the injected
+label.
+
+CAVEAT for the follow-up. These runs share one grid, so no relative-pose estimate is needed to compare maps.
+A field system must either co-register or treat the frame offset as a nuisance parameter; this screen
+establishes that the label signal exists, not that it survives unknown relative pose.
